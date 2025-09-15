@@ -258,9 +258,12 @@ export default function App() {
                             </>
                         )}
 
-                        <Pressable style={styles.resetBtn} onPress={resetAll}>
-                            <Text style={[styles.btnText, styles.resetBtnText]}>Reset</Text>
-                        </Pressable>
+                        <View style={styles.resetSection}>
+                            <View style={styles.resetDivider} />
+                            <Pressable style={styles.resetBtn} onPress={resetAll}>
+                                <Text style={styles.resetBtnText}>Reset Session</Text>
+                            </Pressable>
+                        </View>
                     </View>
                 </>
             ) : (
@@ -288,8 +291,8 @@ export default function App() {
                         bezier
                         style={{ marginVertical: 8, borderRadius: 16 }}
                     />
-                    <Pressable style={styles.resetBtn} onPress={resetAll}>
-                        <Text style={[styles.btnText, styles.resetBtnText]}>Restart</Text>
+                    <Pressable style={styles.restartBtn} onPress={resetAll}>
+                        <Text style={styles.restartBtnText}>Start New Session</Text>
                     </Pressable>
                 </View>
             )}
@@ -317,7 +320,7 @@ const styles = StyleSheet.create({
     subtle: { color: "#9ca3af", marginTop: 8 },
     panel: {
         padding: 20,
-        gap: 12,
+        gap: 16,
         backgroundColor: "#0b1220",
         borderTopWidth: 1,
         borderTopColor: "#1f2937",
@@ -328,29 +331,82 @@ const styles = StyleSheet.create({
         fontVariant: ["tabular-nums"],
         textAlign: "center",
     },
-    info: { color: "white", fontSize: 20, textAlign: "center" },
-    small: { color: "#cbd5e1", textAlign: "center" },
+    info: { 
+        color: "white", 
+        fontSize: 18, 
+        textAlign: "center",
+        fontWeight: "500",
+        lineHeight: 24,
+    },
+    small: { 
+        color: "#cbd5e1", 
+        textAlign: "center",
+        fontSize: 16,
+        marginTop: 4,
+    },
     primaryBtn: {
         backgroundColor: "#2563eb",
         paddingVertical: 16,
-        borderRadius: 16,
+        paddingHorizontal: 24,
+        borderRadius: 12,
         alignItems: "center",
+        minHeight: 52,
+        justifyContent: "center",
     },
     stopBtn: {
         backgroundColor: "#ef4444",
         paddingVertical: 16,
-        borderRadius: 16,
+        paddingHorizontal: 24,
+        borderRadius: 12,
         alignItems: "center",
+        minHeight: 52,
+        justifyContent: "center",
+    },
+    resetSection: {
+        marginTop: 16,
+    },
+    resetDivider: {
+        height: 1,
+        backgroundColor: "#1f2937",
+        marginBottom: 12,
     },
     resetBtn: {
-        backgroundColor: "#374151",
-        paddingVertical: 18,
-        borderRadius: 18,
+        backgroundColor: "transparent",
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        borderRadius: 8,
         alignItems: "center",
-        marginTop: 10,
+        borderWidth: 1,
+        borderColor: "#374151",
+        alignSelf: "center",
     },
-    resetBtnText: { fontSize: 20 },
-    btnText: { color: "white", fontWeight: "700", fontSize: 16 },
+    restartBtn: {
+        backgroundColor: "#2563eb",
+        paddingVertical: 16,
+        paddingHorizontal: 24,
+        borderRadius: 12,
+        alignItems: "center",
+        minHeight: 52,
+        justifyContent: "center",
+        marginTop: 20,
+    },
+    resetBtnText: { 
+        color: "#6b7280", 
+        fontWeight: "400", 
+        fontSize: 13,
+        textTransform: "uppercase",
+        letterSpacing: 0.8,
+    },
+    restartBtnText: { 
+        color: "white", 
+        fontWeight: "600", 
+        fontSize: 16,
+    },
+    btnText: { 
+        color: "white", 
+        fontWeight: "600", 
+        fontSize: 16,
+    },
     chartContainer: {
         flex: 1,
         justifyContent: "center",
