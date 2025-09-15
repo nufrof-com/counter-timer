@@ -236,6 +236,9 @@ export default function App() {
                             <>
                                 <Text style={styles.info}>Rest</Text>
                                 <Text style={styles.timer}>{formatMs(restMs, false)}</Text>
+                                <Pressable style={styles.skipBtn} onPress={nextRound}>
+                                    <Text style={styles.btnText}>Skip Rest</Text>
+                                </Pressable>
                             </>
                         )}
 
@@ -361,6 +364,16 @@ const styles = StyleSheet.create({
         alignItems: "center",
         minHeight: 52,
         justifyContent: "center",
+    },
+    skipBtn: {
+        backgroundColor: "transparent",
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "#4b5563",
+        marginTop: 8,
     },
     resetSection: {
         marginTop: 16,
