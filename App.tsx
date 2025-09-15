@@ -8,6 +8,7 @@ type Phase = "count" | "ready" | "timing" | "rest" | "done";
 
 const GOAL = 40;
 const REST_MS = 15_000;
+const TOTAL_ROUNDS = 4;
 
 export default function App() {
     useKeepAwake();
@@ -16,6 +17,7 @@ export default function App() {
     const [count, setCount] = useState(0);
     const [elapsedMs, setElapsedMs] = useState(0);
     const [restMs, setRestMs] = useState(REST_MS);
+    const [round, setRound] = useState(1);
 
     const startTimeRef = useRef<number | null>(null);
     const restEndRef = useRef<number | null>(null);
@@ -49,6 +51,35 @@ export default function App() {
             if (tickerRef.current) clearInterval(tickerRef.current);
             soundRef.current?.unloadAsync();
         };
+    }, []);
+
+    const nextRound = useCallback(() => {
+        if (round >= TOTAL_ROUNDS) return;
+        if (tickerRef.current) {
+            clearInterval(tickerRef.current);
+            tickerRef.current = null;
+        }
+        startTimeRef.current = null;
+        restEndRef.current = null;
+        setCount(0);
+        setElapsedMs(0);
+        setRestMs(REST_MS);
+        setPhase("count");
+        setRound(r => Math.min(TOTAL_ROUNDS, r + 1));
+    }, [round]);
+
+    const resetAll = useCallback(() => {
+        if (tickerRef.current) {
+            clearInterval(tickerRef.current);
+            tickerRef.current = null;
+        }
+        startTimeRef.current = null;
+        restEndRef.current = null;
+        setCount(0);
+        setElapsedMs(0);
+        setRestMs(REST_MS);
+        setPhase("count");
+        setRound(1); // <-- ensure full reset to round 1
     }, []);
 
     const beepAndVibrate = useCallback(async () => {
@@ -120,19 +151,6 @@ export default function App() {
         }, 100);
     }, [phase, beepAndVibrate]);
 
-    const resetAll = useCallback(() => {
-        if (tickerRef.current) {
-            clearInterval(tickerRef.current);
-            tickerRef.current = null;
-        }
-        startTimeRef.current = null;
-        restEndRef.current = null;
-        setCount(0);
-        setElapsedMs(0);
-        setRestMs(REST_MS);
-        setPhase("count");
-    }, []);
-
     const formatMs = (ms: number, showTenths = true) => {
         const total = Math.floor(ms / 1000);
         const m = Math.floor(total / 60);
@@ -145,6 +163,7 @@ export default function App() {
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text accessibilityRole="header" style={styles.title}>Tap Counter & Timer</Text>
+                <Text style={styles.round}>Round {round} / {TOTAL_ROUNDS}</Text>
             </View>
 
             <Pressable
@@ -190,13 +209,26 @@ export default function App() {
 
                 {phase === "done" && (
                     <>
-                        <Text style={styles.info}>Rest complete</Text>
+                        <Text style={styles.info}>
+                            {round < TOTAL_ROUNDS ? "Round complete" : "All rounds complete"}
+                        </Text>
                         <Text style={styles.small}>Your time: {formatMs(elapsedMs)}</Text>
+
+                        {round < TOTAL_ROUNDS && (
+                            <Pressable
+                                style={styles.primaryBtn}
+                                onPress={nextRound}
+                                accessibilityRole="button"
+                                accessibilityLabel="Next round"
+                            >
+                                <Text style={styles.btnText}>Next Round</Text>
+                            </Pressable>
+                        )}
                     </>
                 )}
 
                 <Pressable style={styles.resetBtn} onPress={resetAll} accessibilityRole="button" accessibilityLabel="Reset">
-                    <Text style={styles.btnText}>Reset</Text>
+                    <Text style={[styles.btnText, styles.resetBtnText]}>Reset</Text>
                 </Pressable>
             </View>
         </SafeAreaView>
@@ -242,12 +274,18 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         alignItems: "center",
     },
+
+    round: { color: "#cbd5e1", fontSize: 14, marginTop: 4 },
+
     resetBtn: {
         backgroundColor: "#374151",
-        paddingVertical: 12,
-        borderRadius: 12,
+        paddingVertical: 16,      // was 12
+        borderRadius: 16,         // was 12
         alignItems: "center",
-        marginTop: 4,
+        marginTop: 8,             // was 4
+    },
+    resetBtnText: {
+        fontSize: 18,             // bigger label just for Reset
     },
     btnText: { color: "white", fontWeight: "700", fontSize: 16 },
 });
